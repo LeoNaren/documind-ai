@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+.venv*/
+.npm-cache/
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+uploads/*
+!uploads/.gitkeep
