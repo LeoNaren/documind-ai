@@ -29,11 +29,11 @@ class AIProvider:
         return deterministic_embedding(text)
     
     async def embed_many(self, texts: list[str]) -> list[list[float]]:
-        if not text:
+        if not texts:
             return []
         if self._client:
             try:
-                result = selft._client.models.embed_content(
+                result = self._client.models.embed_content(
                     model=self.settings.gemini_embedding_model,
                     contents=texts,
                 )
