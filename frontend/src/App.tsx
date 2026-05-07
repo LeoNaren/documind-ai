@@ -11,6 +11,7 @@ import type { ChatTurn } from "./lib/types";
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [files, setFiles] = useState<FileRecord[]>([]);
   const [selectedFileId, setSelectedFileId] = useState<number | null>(null);
   const [turns, setTurns] = useState<ChatTurn[]>([]);
@@ -26,13 +27,20 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (!auth) return;
-    return onAuthStateChanged(auth, setUser);
+    if (!auth) {
+      setAuthLoading(false);
+      return;
+    }
+    return onAuthStateChanged(auth, (firebaseUser) => {
+      setUser(firebaseUser);
+      setAuthLoading(false);
+    });
   }, []);
 
   useEffect(() => {
+    if (authLoading) return;
     void refreshFiles();
-  }, [user]);
+  }, [user, authLoading]);
 
   useEffect(() => {
     let cancelled = false;
