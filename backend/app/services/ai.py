@@ -18,7 +18,7 @@ class AIProvider:
     async def embed(self, text: str) -> list[float]:
         if self._client:
             try:
-                result = self._client.models.embed_content(
+                result = await self._client.aio.models.embed_content(
                     model=self.settings.gemini_embedding_model,
                     contents=text,
                 )
@@ -33,7 +33,7 @@ class AIProvider:
             return []
         if self._client:
             try:
-                result = self._client.models.embed_content(
+                result = await self._client.aio.models.embed_content(
                     model=self.settings.gemini_embedding_model,
                     contents=texts,
                 )
@@ -63,7 +63,7 @@ class AIProvider:
     async def generate(self, prompt: str) -> str:
         if self._client:
             try:
-                response = self._client.models.generate_content(
+                response = await self._client.aio.models.generate_content(
                     model=self.settings.gemini_chat_model,
                     contents=prompt,
                 )

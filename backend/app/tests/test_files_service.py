@@ -42,6 +42,9 @@ async def test_save_and_process_upload(monkeypatch, tmp_path):
         async def embed(self, text):
             return [0.0] * 768
 
+        async def embed_many(self, texts):
+            return [[0.0] * 768 for _ in texts]
+
         async def summarize(self, text):
             return "summary"
 

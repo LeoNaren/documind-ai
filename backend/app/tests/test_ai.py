@@ -30,12 +30,12 @@ def test_mock_summary_prompt():
 @pytest.mark.asyncio
 async def test_ai_provider_uses_gemini_client():
     class FakeModels:
-        def embed_content(self, model, contents):
+        async def embed_content(self, model, contents):
             assert model == "embedding-model"
             assert contents == "hello"
             return type("EmbedResult", (), {"embeddings": [type("Embedding", (), {"values": [1.0]})()]})()
 
-        def generate_content(self, model, contents):
+        async def generate_content(self, model, contents):
             assert model == "chat-model"
             assert "hello" in contents
             return type("GenerateResult", (), {"text": "real answer"})()
@@ -43,7 +43,7 @@ async def test_ai_provider_uses_gemini_client():
     provider = AIProvider(Settings(gemini_api_key=None))
     provider.settings.gemini_chat_model = "chat-model"
     provider.settings.gemini_embedding_model = "embedding-model"
-    provider._client = type("FakeClient", (), {"models": FakeModels()})()
+    provider._client = type("FakeClient", (), {"aio": type("Aio", (), {"models": FakeModels()})()})()
 
     assert await provider.embed("hello") == [1.0] + [0.0] * 767
     assert await provider.generate("hello") == "real answer"
@@ -52,11 +52,11 @@ async def test_ai_provider_uses_gemini_client():
 @pytest.mark.asyncio
 async def test_ai_provider_gemini_empty_text_fallback():
     class FakeModels:
-        def generate_content(self, model, contents):
+        async def generate_content(self, model, contents):
             return type("GenerateResult", (), {"text": ""})()
 
     provider = AIProvider(Settings(gemini_api_key=None))
-    provider._client = type("FakeClient", (), {"models": FakeModels()})()
+    provider._client = type("FakeClient", (), {"aio": type("Aio", (), {"models": FakeModels()})()})()
 
     assert await provider.generate("prompt") == "I could not generate a response."
 
