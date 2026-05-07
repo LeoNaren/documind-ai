@@ -19,6 +19,14 @@ const firebaseConfig = {
 };
 
 const isConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+
+console.log("Firebase config:", {
+  apiKey: firebaseConfig.apiKey ? "SET" : "MISSING",
+  projectId: firebaseConfig.projectId ? "SET" : "MISSING",
+  appId: firebaseConfig.appId ? "SET" : "MISSING",
+  isConfigured,
+});
+
 const app = isConfigured ? initializeApp(firebaseConfig) : null;
 
 export const auth = app ? getAuth(app) : null;
