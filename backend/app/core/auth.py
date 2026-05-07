@@ -58,7 +58,7 @@ async def get_current_user(
             return CurrentUser(uid="dev-user", email="dev@documind.local")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Firebase token",
+            detail=f"Invalid Firebase token: {str(exc)}",
         ) from exc
 
     return CurrentUser(uid=decoded["uid"], email=decoded.get("email"))
@@ -75,6 +75,6 @@ def verify_token_string(token: str | None, settings: Settings) -> CurrentUser:
             return CurrentUser(uid="dev-user", email="dev@documind.local")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid Firebase token",
+            detail=f"Invalid Firebase token: {str(exc)}",
         ) from exc
     return CurrentUser(uid=decoded["uid"], email=decoded.get("email"))
