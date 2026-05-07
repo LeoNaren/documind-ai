@@ -27,6 +27,21 @@ class AIProvider:
             except Exception:
                 logger.exception("Gemini embedding failed; falling back to deterministic embedding")
         return deterministic_embedding(text)
+    
+    async def embed_many(self, texts: list[str]) -> list[list[float]]:
+        if not text:
+            return []
+        if self._client:
+            try:
+                result = selft._client.models.embed_content(
+                    model=self.settings.gemini_embedding_model,
+                    contents=texts,
+                )
+                return [_fit_dimensions(e.values, 768) for e in result.embeddings]
+            except Exception:
+                logger.exception("Gemini batch embedding failed; falling back to deterministic embedding")
+        
+        return [deterministic_embedding(t) for t in texts]
 
     async def summarize(self, text: str) -> str:
         prompt = (
