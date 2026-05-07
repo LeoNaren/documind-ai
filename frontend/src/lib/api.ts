@@ -26,27 +26,10 @@ export interface ChatResponse {
 }
 
 async function authHeaders(user: User | null): Promise<HeadersInit> {
-  //debug
-  console.log("authHeaders called:", { 
-    firebaseEnabled, 
-    hasUser: !!user,
-    userEmail: user?.email 
-  });
   if (firebaseEnabled && user) {
-    const token = await user.getIdToken();
-    console.log("Sending real token, first 20 chars:", token.substring(0, 20));
-    return { Authorization: `Bearer ${token}` };
+    return { Authorization: `Bearer ${await user.getIdToken()}` };
   }
-  console.log("Falling back to dev-token");
-  return { Authorization: "Bearer dev-token" };
-  
-  //
-
-
-  // if (firebaseEnabled && user) {
-  //   return { Authorization: `Bearer ${await user.getIdToken()}` };
-  // }
-  // return { Authorization: "Bearer dev-token" };
+   return { Authorization: "Bearer dev-token" };
 }
 
 export async function uploadFile(file: File, user: User | null): Promise<FileRecord> {
