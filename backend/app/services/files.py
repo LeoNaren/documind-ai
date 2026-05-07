@@ -40,7 +40,7 @@ async def save_and_process_upload(
         ai = AIProvider(settings)
 
         embeddings = await ai.embed_many([raw.text for raw in raw_chunks])
-        for raw in raw_chunks:
+        for idx, raw in enumerate(raw_chunks):
             db.add(
                 ContentChunk(
                     file_id=file_row.id,
@@ -50,7 +50,7 @@ async def save_and_process_upload(
                     page_number=raw.page_number,
                     start_seconds=raw.start_seconds,
                     end_seconds=raw.end_seconds,
-                    embedding=embeddings,
+                    embedding=embeddings[idx],
                 )
             )
         file_row.summary = await ai.summarize("\n\n".join(chunk.text for chunk in raw_chunks)[:20000])

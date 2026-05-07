@@ -18,7 +18,7 @@ class AIProvider:
     async def embed(self, text: str) -> list[float]:
         if self._client:
             try:
-                result = self._client.models.embed_content(
+                result = await self._client.aio.models.embed_content(
                     model=self.settings.gemini_embedding_model,
                     contents=text,
                 )
@@ -27,20 +27,20 @@ class AIProvider:
             except Exception:
                 logger.exception("Gemini embedding failed; falling back to deterministic embedding")
         return deterministic_embedding(text)
-    
+
     async def embed_many(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
         if self._client:
             try:
-                result = self._client.models.embed_content(
+                result = await self._client.aio.models.embed_content(
                     model=self.settings.gemini_embedding_model,
                     contents=texts,
                 )
                 return [_fit_dimensions(e.values, 768) for e in result.embeddings]
             except Exception:
                 logger.exception("Gemini batch embedding failed; falling back to deterministic embedding")
-        
+
         return [deterministic_embedding(t) for t in texts]
 
     async def summarize(self, text: str) -> str:
@@ -63,7 +63,7 @@ class AIProvider:
     async def generate(self, prompt: str) -> str:
         if self._client:
             try:
-                response = self._client.models.generate_content(
+                response = await self._client.aio.models.generate_content(
                     model=self.settings.gemini_chat_model,
                     contents=prompt,
                 )
